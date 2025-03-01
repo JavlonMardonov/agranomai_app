@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'dart:convert';
 
 part 'get_predict_dto.freezed.dart';
 part 'get_predict_dto.g.dart';
