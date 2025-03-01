@@ -72,9 +72,10 @@ class HomeRepoImpl implements HomeRepo {
   @override
   Future<GetPredictDto?> getPredict({required String imagePath}) async {
     try {
+      log("Image Path: $imagePath");
       final response = await dioClient.dio.post(
         NetworkConstants.predictUrl,
-        data: {"image_path": "/uploads/default/6f49ffa2-82cb-44d5-8b03-d269f3b9ec0d.jpg"},
+        data: jsonEncode({"image_path": "$imagePath"}),
         options: Options(
           extra: {"requiresToken": true},
           headers: {

@@ -11,7 +11,7 @@ class DioClient {
 
   DioClient() {
     _dio = Dio(BaseOptions(
-      connectTimeout: const Duration(seconds: 10), // 10 seconds
+      connectTimeout: const Duration(seconds: 20), // 10 seconds
       receiveTimeout: const Duration(seconds: 10), // 10 seconds
       sendTimeout: const Duration(seconds: 10), // 10 seconds
      

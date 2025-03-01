@@ -62,7 +62,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         ImageUploadEvent.getPredict(
                             imagePath: "${state.imagePath}"),
                       );
-                  log("Desctr[okdv.............] ${state.imageData?.data?.type?.description}");
+                  log("Description  ${state.imageData?.data?.type?.description}");
                 }
 
                 if (state.imageData?.data != null) {
@@ -92,7 +92,8 @@ class _CameraScreenState extends State<CameraScreen> {
                         margin: const EdgeInsets.symmetric(vertical: 5),
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: isUserMessage ? Colors.green : Colors.grey[300],
+                          color:
+                              isUserMessage ? Colors.green : Colors.grey[300],
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: message['type'] == 'image'
@@ -103,8 +104,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                 fit: BoxFit.cover,
                               )
                             : message['type'] == 'response'
-                                ? CabbageLoopersCard(
-                                    data: message['content'] )
+                                ? CabbageLoopersCard(data: message['content'])
                                 : const Text(""),
                       ),
                     );
@@ -142,6 +142,7 @@ class _CameraScreenState extends State<CameraScreen> {
           ),
         ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () => _pickImage(false),
         child: const Icon(Icons.camera_alt),

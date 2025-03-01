@@ -27,7 +27,7 @@ class ImageUploadBloc extends Bloc<ImageUploadEvent, ImageUploadState> {
     ));
 
     try {
-      final imagePath = event.imagefile.path;
+      final imagePath = await imageRepository.getImageUrl(imageFile: event.imagefile);
       emit(state.copyWith(status: Statuses.Success, imagePath: imagePath));
     } catch (e) {
       emit(state.copyWith(status: Statuses.Error, errorMessage: e.toString()));
