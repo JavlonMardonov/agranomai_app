@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:agranom_ai/common/utils/enums/statuses.dart';
 import 'package:agranom_ai/data/models/get_predict_dto.dart';
 import 'package:agranom_ai/data/repositories/home_repo.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -49,7 +48,7 @@ class ImageUploadBloc extends Bloc<ImageUploadEvent, ImageUploadState> {
         ...state.messages!,
         {'type': 'response', 'content': prediction?.data, 'isUser': false}
       ]));
-    }  catch (e) {
+    } catch (e) {
       emit(state.copyWith(status: Statuses.Error, errorMessage: e.toString()));
     }
   }

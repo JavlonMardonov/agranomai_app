@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -10,14 +9,14 @@ class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.redAccent),
+        icon: const Icon(Icons.arrow_back, color: Color(0xff81C784)),
         onPressed: () {},
       ),
-      title: const Text("Tarix", style: TextStyle(color: Colors.redAccent)),
+      title: const Text("Tarix", style: TextStyle(color: Color(0xff81C784))),
       centerTitle: true,
       actions: [
         IconButton(
-          icon: const Icon(Icons.more_vert, color: Colors.redAccent),
+          icon: const Icon(Icons.more_vert, color: Color(0xff81C784)),
           onPressed: () {},
         ),
       ],
@@ -72,7 +71,9 @@ class HistoryWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(history[index]["title"]!,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff81C784))),
                     const SizedBox(height: 4),
                     Text(
                         "${history[index]["date"]}    ${history[index]["time"]}",

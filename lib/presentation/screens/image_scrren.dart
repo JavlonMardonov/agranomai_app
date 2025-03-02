@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:agranom_ai/bloc/image_upload_bloc/image_upload_bloc.dart';
 import 'package:agranom_ai/common/utils/enums/statuses.dart';
@@ -20,12 +19,42 @@ class _CameraScreenState extends State<CameraScreen> {
   String errorText = "";
 
   Future<void> _pickImage(bool fromCamera) async {
-    final image = await _imagePickerService.pickImage(fromCamera: fromCamera);
-    if (image != null) {
-     
-      context.read<ImageUploadBloc>().add(
-        ImageUploadEvent.getImagePath(imagefile: image),
-      );
+    try {
+      final image = await _imagePickerService.pickImage(fromCamera: fromCamera);
+      if (image != null && mounted) {
+        context.read<ImageUploadBloc>().add(
+              ImageUploadEvent.getImagePath(imagefile: image),
+            );
+      }
+    } catch (e) {
+      if (mounted) {
+        _showSnackBar("Error picking image: $e");
+      }
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green.shade700,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 20,
+        ),
+      ),
+    );
+  }
+
+  void _handleSendMessage() {
+    final text = _textController.text.trim();
+    if (text.isNotEmpty) {
+      // Handle sending text message
+      _textController.clear();
     }
   }
 
@@ -38,111 +67,226 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Camera Chat")),
-      body: Column(
-        children: [
-          Expanded(
-            child: BlocConsumer<ImageUploadBloc, ImageUploadState>(
-              listener: (context, state) {
-                if (state.status == Statuses.Success) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text("Rasm muvaffaqiyatli yuklandi!")),
-                  );
-                } else if (state.status == Statuses.Error) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                            "Xatolik: Rasim sifati yaxshi emas! Yoki rasmni yuklashda xatolik sodir bo'ldi!")),
-                  );
-                  errorText =
-                      "Rasim sifati yaxshi emas! Yoki rasmni yuklashda xatolik sodir bo'ldi!";
-                }
-                if (state.imagePath != null) {
-                  context.read<ImageUploadBloc>().add(
-                    ImageUploadEvent.getPredict(
-                        imagePath: "${state.imagePath}"),
-                  );
-                  log(
-                      "Desctr[okdv.............] ${state.imageData?.data?.type?.description}");
-                }
-       
-              },
-              builder: (context, state) {
-                return ListView.builder(
-                  reverse: true,
-                  padding: const EdgeInsets.all(10),
-                  itemCount: state.messages?.length, // Null tekshiruvi olib tashlandi
-                  itemBuilder: (context, index) {
-                    final message = state.messages![state.messages!.length - 1 - index];
-                    final isUserMessage = message['isUser'] as bool;
-
-                    return Align(
-                      alignment: isUserMessage
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 5),
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: isUserMessage ? Colors.green : Colors.grey[300],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: message['type'] == 'image'
-                            ? Image.file(
-                                message['content'] as File,
-                                height: 150,
-                                width: 150,
-                                fit: BoxFit.cover,
-                              )
-                            : message['type'] == 'response'
-                                ? CabbageLoopersCard(
-                                    data: message['content'],
-                                    errorText: errorText,
-                                  )
-                                : CabbageLoopersCard(
-                                    data: message['content'],
-                                    errorText: errorText,
-                                  ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+      appBar: AppBar(
+        title: const Text(
+          "Plant Analysis",
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textController,
-                    decoration: InputDecoration(
-                      hintText: "Matn kiriting...",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    final text = _textController.text;
-                    if (text.isNotEmpty) {
-                      _textController.clear();
-                    }
-                  },
-                  icon: const Icon(Icons.send, color: Colors.green),
-                ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20),
+            bottomRight: Radius.circular(20),
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.green.withOpacity(0.1),
+                Colors.white,
               ],
             ),
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _pickImage(false),
-        child: const Icon(Icons.camera_alt),
+          child: Column(
+            children: [
+              Expanded(
+                child: BlocConsumer<ImageUploadBloc, ImageUploadState>(
+                  listener: (context, state) {
+                    if (state.status == Statuses.Success) {
+                      _showSnackBar("Image uploaded successfully!");
+                    } else if (state.status == Statuses.Error) {
+                      errorText = "Failed to process image. Please try again.";
+                      _showSnackBar("Error: $errorText");
+                    }
+
+                    if (state.imagePath != null) {
+                      context.read<ImageUploadBloc>().add(
+                            ImageUploadEvent.getPredict(
+                              imagePath: state.imagePath!,
+                            ),
+                          );
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state.messages?.isEmpty ?? true) {
+                      return Center(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add_a_photo_outlined,
+                                size: 100,
+                                color: Colors.green.withOpacity(0.5),
+                              ),
+                              const SizedBox(height: 20),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 32),
+                                child: Text(
+                                  "Take or upload a photo to analyze",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.grey.shade700,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      reverse: true,
+                      padding: const EdgeInsets.all(16),
+                      itemCount: state.messages?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final message =
+                            state.messages![state.messages!.length - 1 - index];
+                        final isUserMessage = message['isUser'] as bool;
+
+                        return Align(
+                          alignment: isUserMessage
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              color: isUserMessage
+                                  ? Colors.green.shade500
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width * 0.75,
+                                  minWidth: 100,
+                                ),
+                                child: message['type'] == 'image'
+                                    ? Image.file(
+                                        message['content'] as File,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: CabbageLoopersCard(
+                                          data: message['content'],
+                                          errorText: errorText,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: SafeArea(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () => _pickImage(true),
+                                icon: const Icon(Icons.camera_alt,
+                                    color: Colors.green),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: TextField(
+                                  controller: _textController,
+                                  decoration: const InputDecoration(
+                                    hintText: "Type a message...",
+                                    border: InputBorder.none,
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 8),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              IconButton(
+                                onPressed: () => _pickImage(false),
+                                icon: const Icon(Icons.photo_library,
+                                    color: Colors.green),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        height: 50,
+                        width: 50,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.green, Color(0xff81C784)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          onPressed: _handleSendMessage,
+                          icon: const Icon(Icons.send, color: Colors.white),
+                          padding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

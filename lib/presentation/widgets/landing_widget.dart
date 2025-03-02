@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class LandingWidget extends StatelessWidget {
@@ -45,7 +44,7 @@ class LandingWidget extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           SizedBox(
-            height: height * 0.53,
+            height: height * 0.50,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: 5,

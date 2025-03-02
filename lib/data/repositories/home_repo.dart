@@ -28,6 +28,12 @@ class HomeRepoImpl implements HomeRepo {
     try {
       String fileName = imageFile.path.split('/').last;
       var fileExt = fileName.split('.').last;
+
+      // Validate file extension
+      if (!['jpg', 'jpeg', 'png'].contains(fileExt.toLowerCase())) {
+        throw Exception('Unsupported file type. Please use JPG or PNG images.');
+      }
+
       final formData = FormData.fromMap({
         'file': await MultipartFile.fromFile(
           imageFile.path,
@@ -36,16 +42,14 @@ class HomeRepoImpl implements HomeRepo {
         ),
       });
 
-      // ✅ So‘rov jo‘natish
       final response = await dioClient.dio.post(
         NetworkConstants.uploadUrl,
         data: formData,
-        queryParameters:
-            folder != null ? {"folder": folder} : {}, // Folder ixtiyoriy
+        queryParameters: folder != null ? {"folder": folder} : {},
         options: Options(
           extra: {"requiresToken": true},
           headers: {
-            "Authorization": "Bearer ${NetworkConstants.token}", // Token
+            "Authorization": "Bearer ${NetworkConstants.token}",
           },
         ),
       );
@@ -56,16 +60,30 @@ class HomeRepoImpl implements HomeRepo {
         log("Uploaded URL: $payload");
         return payload;
       } else {
-        throw Exception("Server returned status code: ${response.statusCode}");
+        throw Exception("Failed to upload image. Please try again.");
       }
     } on DioException catch (e) {
       log("Dio Error: ${e.message}");
       log("Dio Error Type: ${e.type}");
       log("Dio Error Response: ${e.response?.data}");
-      throw Exception("Error happened while uploading file: ${e.message}");
+
+      String errorMessage = 'Failed to upload image. ';
+      if (e.type == DioExceptionType.connectionTimeout) {
+        errorMessage +=
+            'Connection timed out. Please check your internet connection.';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage += 'No internet connection.';
+      } else if (e.response?.statusCode == 413) {
+        errorMessage +=
+            'Image size is too large. Please choose a smaller image.';
+      } else {
+        errorMessage += 'Please try again later.';
+      }
+
+      throw Exception(errorMessage);
     } catch (e) {
       log("Unexpected Error: $e");
-      throw Exception("Unexpected error: $e");
+      throw Exception("An unexpected error occurred. Please try again later.");
     }
   }
 
@@ -89,8 +107,7 @@ class HomeRepoImpl implements HomeRepo {
         final payload = response.data;
         log("Data fetching...: $payload");
         return GetPredictDto.fromJson(payload);
-      }
-      else if (response.statusCode == 422) {
+      } else if (response.statusCode == 422) {
         log("Jigar bu senmi?..........: ${response.statusCode}");
       } else {
         throw Exception("Server returned status code: ${response.statusCode}");
@@ -104,5 +121,6 @@ class HomeRepoImpl implements HomeRepo {
       log("Error fetchin data: $e");
       throw Exception("Unexpected error: $e");
     }
+    return null;
   }
 }
