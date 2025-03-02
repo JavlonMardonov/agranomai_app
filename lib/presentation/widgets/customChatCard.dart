@@ -3,19 +3,40 @@ import 'package:flutter/material.dart';
 
 class CabbageLoopersCard extends StatelessWidget {
   final Data data;
+  final String errorText;
 
-  const CabbageLoopersCard({Key? key, required this.data}) : super(key: key);
+  const CabbageLoopersCard(
+      {super.key, required this.data, this.errorText = ""});
 
   @override
   Widget build(BuildContext context) {
     final List<String> images = ["${data.type?.images}"];
 
     final String name = "${data.type?.name}";
-    final String imageUrl =  "https://api.agronomai.birnima.uz${data.image}";
+    final String imageUrl = "https://api.agronomai.birnima.uz${data.image}";
     final String nameUz = "${data.type?.nameUz}";
     final String description = "${data.type?.description}";
     final double confidence = double.parse("${data.confidence}");
     final String createdAt = "${data.createdAt}";
+
+    if (errorText.contains("Xatolik")) {
+      return Card(
+        elevation: 2,
+        margin: EdgeInsets.all(16),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                errorText,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return Card(
       elevation: 2,
@@ -28,21 +49,21 @@ class CabbageLoopersCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.network(
-              imageUrl,
-              width: double.infinity,
-              height: 150,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
+                imageUrl,
                 width: double.infinity,
                 height: 150,
-                color: Colors.grey[300],
-                child: Icon(Icons.broken_image, color: Colors.grey[600]),
-                );
-              },
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: double.infinity,
+                    height: 150,
+                    color: Colors.grey[300],
+                    child: Icon(Icons.broken_image, color: Colors.grey[600]),
+                  );
+                },
               ),
             ),
-            
+
             // Rasm
 
             SizedBox(height: 16),

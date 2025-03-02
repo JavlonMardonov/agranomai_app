@@ -75,7 +75,7 @@ class HomeRepoImpl implements HomeRepo {
       log("Image Path: $imagePath");
       final response = await dioClient.dio.post(
         NetworkConstants.predictUrl,
-        data: jsonEncode({"image_path": "$imagePath"}),
+        data: jsonEncode({"image_path": imagePath}),
         options: Options(
           extra: {"requiresToken": true},
           headers: {
@@ -89,6 +89,9 @@ class HomeRepoImpl implements HomeRepo {
         final payload = response.data;
         log("Data fetching...: $payload");
         return GetPredictDto.fromJson(payload);
+      }
+      else if (response.statusCode == 422) {
+        log("Jigar bu senmi?..........: ${response.statusCode}");
       } else {
         throw Exception("Server returned status code: ${response.statusCode}");
       }

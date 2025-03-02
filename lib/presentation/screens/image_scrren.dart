@@ -17,17 +17,15 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen> {
   final ImagePickerService _imagePickerService = ImagePickerService();
   final TextEditingController _textController = TextEditingController();
-  List<Map<String, dynamic>> messages = [];
+  String errorText = "";
 
   Future<void> _pickImage(bool fromCamera) async {
     final image = await _imagePickerService.pickImage(fromCamera: fromCamera);
     if (image != null) {
-      setState(() {
-        messages.add({'type': 'image', 'content': image, 'isUser': true});
-      });
+     
       context.read<ImageUploadBloc>().add(
-            ImageUploadEvent.getImagePath(imagefile: image),
-          );
+        ImageUploadEvent.getImagePath(imagefile: image),
+      );
     }
   }
 
@@ -53,35 +51,30 @@ class _CameraScreenState extends State<CameraScreen> {
                   );
                 } else if (state.status == Statuses.Error) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Xatolik: ${state.errorMessage}")),
+                    SnackBar(
+                        content: Text(
+                            "Xatolik: Rasim sifati yaxshi emas! Yoki rasmni yuklashda xatolik sodir bo'ldi!")),
                   );
-                  log(state.errorMessage.toString());
+                  errorText =
+                      "Rasim sifati yaxshi emas! Yoki rasmni yuklashda xatolik sodir bo'ldi!";
                 }
                 if (state.imagePath != null) {
                   context.read<ImageUploadBloc>().add(
-                        ImageUploadEvent.getPredict(
-                            imagePath: "${state.imagePath}"),
-                      );
-                  log("Description  ${state.imageData?.data?.type?.description}");
+                    ImageUploadEvent.getPredict(
+                        imagePath: "${state.imagePath}"),
+                  );
+                  log(
+                      "Desctr[okdv.............] ${state.imageData?.data?.type?.description}");
                 }
-
-                if (state.imageData?.data != null) {
-                  setState(() {
-                    messages.add({
-                      'type': 'response',
-                      'content': state.imageData!.data,
-                      'isUser': false
-                    });
-                  });
-                }
+       
               },
               builder: (context, state) {
                 return ListView.builder(
                   reverse: true,
                   padding: const EdgeInsets.all(10),
-                  itemCount: messages.length,
+                  itemCount: state.messages?.length, // Null tekshiruvi olib tashlandi
                   itemBuilder: (context, index) {
-                    final message = messages[messages.length - 1 - index];
+                    final message = state.messages![state.messages!.length - 1 - index];
                     final isUserMessage = message['isUser'] as bool;
 
                     return Align(
@@ -92,8 +85,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         margin: const EdgeInsets.symmetric(vertical: 5),
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color:
-                              isUserMessage ? Colors.green : Colors.grey[300],
+                          color: isUserMessage ? Colors.green : Colors.grey[300],
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: message['type'] == 'image'
@@ -104,8 +96,14 @@ class _CameraScreenState extends State<CameraScreen> {
                                 fit: BoxFit.cover,
                               )
                             : message['type'] == 'response'
-                                ? CabbageLoopersCard(data: message['content'])
-                                : const Text(""),
+                                ? CabbageLoopersCard(
+                                    data: message['content'],
+                                    errorText: errorText,
+                                  )
+                                : CabbageLoopersCard(
+                                    data: message['content'],
+                                    errorText: errorText,
+                                  ),
                       ),
                     );
                   },
@@ -142,7 +140,6 @@ class _CameraScreenState extends State<CameraScreen> {
           ),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () => _pickImage(false),
         child: const Icon(Icons.camera_alt),

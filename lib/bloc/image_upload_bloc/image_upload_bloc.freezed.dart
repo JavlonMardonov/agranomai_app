@@ -369,6 +369,8 @@ mixin _$ImageUploadState {
   String? get imagePath => throw _privateConstructorUsedError;
   Bool? get hasPredict => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
+  List<Map<String, dynamic>>? get messages =>
+      throw _privateConstructorUsedError;
 
   /// Create a copy of ImageUploadState
   /// with the given fields replaced by the non-null parameter values.
@@ -388,7 +390,8 @@ abstract class $ImageUploadStateCopyWith<$Res> {
       GetPredictDto? imageData,
       String? imagePath,
       Bool? hasPredict,
-      String? errorMessage});
+      String? errorMessage,
+      List<Map<String, dynamic>>? messages});
 
   $GetPredictDtoCopyWith<$Res>? get imageData;
 }
@@ -413,6 +416,7 @@ class _$ImageUploadStateCopyWithImpl<$Res, $Val extends ImageUploadState>
     Object? imagePath = freezed,
     Object? hasPredict = freezed,
     Object? errorMessage = freezed,
+    Object? messages = freezed,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -435,6 +439,10 @@ class _$ImageUploadStateCopyWithImpl<$Res, $Val extends ImageUploadState>
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
+      messages: freezed == messages
+          ? _value.messages
+          : messages // ignore: cast_nullable_to_non_nullable
+              as List<Map<String, dynamic>>?,
     ) as $Val);
   }
 
@@ -466,7 +474,8 @@ abstract class _$$GetUploadStateImplCopyWith<$Res>
       GetPredictDto? imageData,
       String? imagePath,
       Bool? hasPredict,
-      String? errorMessage});
+      String? errorMessage,
+      List<Map<String, dynamic>>? messages});
 
   @override
   $GetPredictDtoCopyWith<$Res>? get imageData;
@@ -490,6 +499,7 @@ class __$$GetUploadStateImplCopyWithImpl<$Res>
     Object? imagePath = freezed,
     Object? hasPredict = freezed,
     Object? errorMessage = freezed,
+    Object? messages = freezed,
   }) {
     return _then(_$GetUploadStateImpl(
       status: null == status
@@ -512,6 +522,10 @@ class __$$GetUploadStateImplCopyWithImpl<$Res>
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
+      messages: freezed == messages
+          ? _value._messages
+          : messages // ignore: cast_nullable_to_non_nullable
+              as List<Map<String, dynamic>>?,
     ));
   }
 }
@@ -524,7 +538,9 @@ class _$GetUploadStateImpl implements _GetUploadState {
       this.imageData,
       this.imagePath,
       this.hasPredict,
-      this.errorMessage});
+      this.errorMessage,
+      final List<Map<String, dynamic>>? messages = const []})
+      : _messages = messages;
 
   @override
   @JsonKey()
@@ -537,10 +553,20 @@ class _$GetUploadStateImpl implements _GetUploadState {
   final Bool? hasPredict;
   @override
   final String? errorMessage;
+  final List<Map<String, dynamic>>? _messages;
+  @override
+  @JsonKey()
+  List<Map<String, dynamic>>? get messages {
+    final value = _messages;
+    if (value == null) return null;
+    if (_messages is EqualUnmodifiableListView) return _messages;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'ImageUploadState(status: $status, imageData: $imageData, imagePath: $imagePath, hasPredict: $hasPredict, errorMessage: $errorMessage)';
+    return 'ImageUploadState(status: $status, imageData: $imageData, imagePath: $imagePath, hasPredict: $hasPredict, errorMessage: $errorMessage, messages: $messages)';
   }
 
   @override
@@ -556,12 +582,13 @@ class _$GetUploadStateImpl implements _GetUploadState {
             (identical(other.hasPredict, hasPredict) ||
                 other.hasPredict == hasPredict) &&
             (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+                other.errorMessage == errorMessage) &&
+            const DeepCollectionEquality().equals(other._messages, _messages));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, status, imageData, imagePath, hasPredict, errorMessage);
+  int get hashCode => Object.hash(runtimeType, status, imageData, imagePath,
+      hasPredict, errorMessage, const DeepCollectionEquality().hash(_messages));
 
   /// Create a copy of ImageUploadState
   /// with the given fields replaced by the non-null parameter values.
@@ -579,7 +606,8 @@ abstract class _GetUploadState implements ImageUploadState {
       final GetPredictDto? imageData,
       final String? imagePath,
       final Bool? hasPredict,
-      final String? errorMessage}) = _$GetUploadStateImpl;
+      final String? errorMessage,
+      final List<Map<String, dynamic>>? messages}) = _$GetUploadStateImpl;
 
   @override
   Statuses get status;
@@ -591,6 +619,8 @@ abstract class _GetUploadState implements ImageUploadState {
   Bool? get hasPredict;
   @override
   String? get errorMessage;
+  @override
+  List<Map<String, dynamic>>? get messages;
 
   /// Create a copy of ImageUploadState
   /// with the given fields replaced by the non-null parameter values.
