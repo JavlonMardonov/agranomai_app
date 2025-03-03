@@ -155,6 +155,10 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new),
+          onPressed: () => Navigator.pushReplacementNamed(context, '/landing'),
+        ),
         title: const Text(
           "Plant Analysis",
           style: TextStyle(
