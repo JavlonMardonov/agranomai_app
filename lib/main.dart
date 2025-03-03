@@ -1,8 +1,6 @@
 import 'package:agranom_ai/bloc/auth_bloc/auth_bloc.dart';
 import 'package:agranom_ai/bloc/image_upload_bloc/image_upload_bloc.dart';
 import 'package:agranom_ai/common/app/injcetion_container.dart';
-import 'package:agranom_ai/common/constant/network_constant.dart';
-import 'package:agranom_ai/common/constant/prefers_key.dart';
 import 'package:agranom_ai/data/repositories/auth_repository.dart';
 import 'package:agranom_ai/data/repositories/home_repo.dart';
 import 'package:agranom_ai/presentation/screens/auth/sign_in_screen.dart';
