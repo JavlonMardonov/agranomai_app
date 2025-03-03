@@ -20,25 +20,9 @@ Future<void> initInjection() async {
 
   getIt.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(getIt<Dio>()));
+  homeInit();
 }
 
-// Future<void> authInit() async {
-//   getIt
-//     ..registerLazySingleton<LoginUsecase>(() => LoginUsecase(authRepo: getIt()))
-//     ..registerLazySingleton<RegisterUsecases>(
-//       () => RegisterUsecases(authRepo: getIt()),
-//     )
-//     ..registerLazySingleton<DioClient>(
-//       () => DioClient(),
-//     )
-//     ..registerLazySingleton<AuthRepo>(
-//         () => AuthRepoImpl(authRemoteDataSource: getIt()))
-//     ..registerLazySingleton<AuthRemoteDataSource>(
-//         () => AuthRemoteDataSourceImpl())
-//     ..registerLazySingleton(
-//       () => AuthProvider(),
-//     );
-// }
 
 // home
 Future<void> homeInit() async {
@@ -46,8 +30,6 @@ Future<void> homeInit() async {
     ..registerLazySingleton<DioClient>(
       () => DioClient(),
     )
-    ..registerLazySingleton<Dio>(
-      () => Dio(),
-    )
+  
     ..registerLazySingleton<HomeRepo>(() => HomeRepoImpl());
 }

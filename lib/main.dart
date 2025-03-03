@@ -7,8 +7,8 @@ import 'package:agranom_ai/data/repositories/auth_repository.dart';
 import 'package:agranom_ai/data/repositories/home_repo.dart';
 import 'package:agranom_ai/presentation/screens/auth/sign_in_screen.dart';
 import 'package:agranom_ai/presentation/screens/auth/sign_up_screen.dart';
-import 'package:agranom_ai/presentation/screens/image_scrren.dart';
-import 'package:agranom_ai/presentation/screens/landing_screens.dart';
+import 'package:agranom_ai/presentation/screens/home/image_scrren.dart';
+import 'package:agranom_ai/presentation/screens/home/landing_screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,8 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initInjection();
- getIt<SharedPreferences>()
-      .remove(PrefsKeys.tokenKey);
+
 
   runApp(const MyApp());
 }

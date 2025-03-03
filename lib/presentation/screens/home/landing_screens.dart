@@ -1,5 +1,5 @@
 import 'package:agranom_ai/data/services/data.dart';
-import 'package:agranom_ai/presentation/screens/history_screen.dart';
+import 'package:agranom_ai/presentation/screens/home/history_screen.dart';
 import 'package:agranom_ai/presentation/widgets/custom_appbar.dart';
 import 'package:agranom_ai/presentation/widgets/landing_widget.dart';
 import 'package:flutter/material.dart';

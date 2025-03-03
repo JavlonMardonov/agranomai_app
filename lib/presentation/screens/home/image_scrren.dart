@@ -5,6 +5,7 @@ import 'package:agranom_ai/data/services/image_picker_service.dart';
 import 'package:agranom_ai/presentation/widgets/customChatCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -28,15 +29,21 @@ class _CameraScreenState extends State<CameraScreen> {
       }
     } catch (e) {
       if (mounted) {
-        _showSnackBar("Error picking image: $e");
+        _showErrorSnackBar("Error picking image: $e");
       }
     }
   }
 
-  void _showSnackBar(String message) {
+  void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Row(
+          children: [
+            const Icon(Icons.check_circle, color: Colors.white),
+            const SizedBox(width: 8),
+            Expanded(child: Text(message)),
+          ],
+        ),
         backgroundColor: Colors.green.shade700,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
@@ -46,6 +53,86 @@ class _CameraScreenState extends State<CameraScreen> {
           horizontal: 20,
           vertical: 20,
         ),
+      ),
+    );
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.error_outline, color: Colors.white),
+            const SizedBox(width: 8),
+            Expanded(child: Text(message)),
+          ],
+        ),
+        backgroundColor: Colors.red.shade700,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 20,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: 3,
+        itemBuilder: (context, index) {
+          final isUserMessage = index % 2 == 0;
+          return Align(
+            alignment:
+                isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              width: MediaQuery.of(context).size.width * 0.75,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.all(16),
+                    height: 20,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    height: 20,
+                    width: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -103,11 +190,15 @@ class _CameraScreenState extends State<CameraScreen> {
               Expanded(
                 child: BlocConsumer<ImageUploadBloc, ImageUploadState>(
                   listener: (context, state) {
-                    if (state.status == Statuses.Success) {
-                      _showSnackBar("Image uploaded successfully!");
+                    // Clear any existing SnackBars first
+                    ScaffoldMessenger.of(context).clearSnackBars();
+
+                    if (state.status == Statuses.Success &&
+                        state.imagePath == null) {
+                      _showSuccessSnackBar("Image uploaded successfully!");
                     } else if (state.status == Statuses.Error) {
                       errorText = "Failed to process image. Please try again.";
-                      _showSnackBar("Error: $errorText");
+                      _showErrorSnackBar("Error: $errorText");
                     }
 
                     if (state.imagePath != null) {
@@ -119,6 +210,10 @@ class _CameraScreenState extends State<CameraScreen> {
                     }
                   },
                   builder: (context, state) {
+                    if (state.status == Statuses.Loading) {
+                      return _buildShimmerLoading();
+                    }
+
                     if (state.messages?.isEmpty ?? true) {
                       return Center(
                         child: SingleChildScrollView(

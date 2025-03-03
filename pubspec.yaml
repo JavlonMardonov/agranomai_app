@@ -1,6 +1,6 @@
 name: agranom_ai
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -18,6 +18,7 @@ dependencies:
   http_parser: ^4.1.2
   image_picker: ^1.1.2
   shared_preferences: ^2.5.2
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
