@@ -1,0 +1,36 @@
+name: Flutter Build APK and AAB
+
+on:
+  push:
+    branches:
+      - main 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set Up Java
+        uses: actions/setup-java@v3.12.0
+        with:
+          distribution: 'oracle'
+          java-version: '17'
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.0' 
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK and AAB
+        run: |
+          flutter build apk --release
+          flutter build appbundle --release
+
+      - name: Upload APK and AAB to GitHub Releases
+        uses: ghactions/upload-release-asset@v1
+        with:
+          tag: 'v${{ github.run_number }}'  
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
