@@ -27,7 +27,19 @@ jobs:
           flutter build apk --release
           flutter build appbundle --release
 
-      - name: Upload APK and AAB to GitHub Releases
+      - name: Create release
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+        run: |
+          gh release create "$tag" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${tag#v}" \
+              --generate-notes
+        shell: bash
+
+      - name: Upload APK to GitHub Releases
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
