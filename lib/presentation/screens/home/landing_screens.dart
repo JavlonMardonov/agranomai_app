@@ -1,8 +1,9 @@
-import 'package:agranom_ai/data/services/data.dart';
-import 'package:agranom_ai/presentation/screens/home/history_screen.dart';
+import 'package:agranom_ai/bloc/history_bloc/history_bloc.dart';
 import 'package:agranom_ai/presentation/widgets/custom_appbar.dart';
+import 'package:agranom_ai/presentation/widgets/history_widget.dart';
 import 'package:agranom_ai/presentation/widgets/landing_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -17,11 +18,13 @@ class _LandingPageState extends State<LandingPage> {
   final List<Widget> _pages = [
     const LandingWidget(),
     // const CameraScreen(),
-    HistoryWidget(history: history),
+    HistoryWidget(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    context.read<HistoryBloc>().add(const HistoryEvent.fetchHistory());
+
     return Scaffold(
       backgroundColor: const Color(0xffF5EDE7),
       appBar: _currentIndex == 1 ? HistoryAppBar() : const CustomAppBar(),
@@ -102,7 +105,7 @@ class _LandingPageState extends State<LandingPage> {
           child: FloatingActionButton(
             elevation: 0,
             backgroundColor: const Color.fromARGB(0, 240, 240, 240),
-            onPressed: () => Navigator.pushNamed(context, "/camera"),
+            onPressed: () => Navigator.pushNamed(context, "/cameraScreen"),
             child: const Icon(
               Icons.add_a_photo,
               size: 32,

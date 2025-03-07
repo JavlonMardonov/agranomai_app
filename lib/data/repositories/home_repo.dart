@@ -48,9 +48,9 @@ class HomeRepoImpl implements HomeRepo {
         queryParameters: folder != null ? {"folder": folder} : {},
         options: Options(
           extra: {"requiresToken": true},
-          headers: {
-            "Authorization": "Bearer ${NetworkConstants.token}",
-          },
+          // headers: {
+          //   "Authorization": "Bearer ${NetworkConstants.token}",
+          // },
         ),
       );
 
@@ -96,9 +96,9 @@ class HomeRepoImpl implements HomeRepo {
         data: jsonEncode({"image_path": imagePath}),
         options: Options(
           extra: {"requiresToken": true},
-          headers: {
-            "Authorization": "Bearer ${NetworkConstants.token}", // Token
-          },
+          // headers: {
+          //   "Authorization": "Bearer ${NetworkConstants.token}", // Token
+          // },
         ),
       );
 

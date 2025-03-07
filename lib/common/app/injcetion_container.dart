@@ -1,5 +1,8 @@
+import 'package:agranom_ai/bloc/history_bloc/history_bloc.dart';
 import 'package:agranom_ai/data/repositories/auth_repository.dart';
+import 'package:agranom_ai/data/repositories/chat_repo.dart';
 import 'package:agranom_ai/data/repositories/custom_dio_client.dart';
+import 'package:agranom_ai/data/repositories/history_repository.dart';
 import 'package:agranom_ai/data/repositories/home_repo.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
@@ -23,13 +26,18 @@ Future<void> initInjection() async {
   homeInit();
 }
 
-
 // home
 Future<void> homeInit() async {
   getIt
     ..registerLazySingleton<DioClient>(
       () => DioClient(),
     )
-  
+    ..registerLazySingleton<HistoryRepository>(
+      () => HistoryRepository(),
+    )
+    ..registerLazySingleton(
+      () => HistoryBloc(getIt<HistoryRepository>()),
+    )
+    ..registerLazySingleton(() => ChatRepository())
     ..registerLazySingleton<HomeRepo>(() => HomeRepoImpl());
 }

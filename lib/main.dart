@@ -1,10 +1,15 @@
 import 'package:agranom_ai/bloc/auth_bloc/auth_bloc.dart';
+import 'package:agranom_ai/bloc/chat_bloc/chat_bloc.dart';
+import 'package:agranom_ai/bloc/history_bloc/history_bloc.dart';
 import 'package:agranom_ai/bloc/image_upload_bloc/image_upload_bloc.dart';
 import 'package:agranom_ai/common/app/injcetion_container.dart';
 import 'package:agranom_ai/data/repositories/auth_repository.dart';
+import 'package:agranom_ai/data/repositories/chat_repo.dart';
+import 'package:agranom_ai/data/repositories/history_repository.dart';
 import 'package:agranom_ai/data/repositories/home_repo.dart';
 import 'package:agranom_ai/presentation/screens/auth/sign_in_screen.dart';
 import 'package:agranom_ai/presentation/screens/auth/sign_up_screen.dart';
+import 'package:agranom_ai/presentation/screens/home/camera_screen.dart';
 import 'package:agranom_ai/presentation/screens/home/image_scrren.dart';
 import 'package:agranom_ai/presentation/screens/home/landing_screens.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +40,12 @@ class MyApp extends StatelessWidget {
         BlocProvider<ImageUploadBloc>(
           create: (context) => ImageUploadBloc(getIt<HomeRepo>()),
         ),
+        BlocProvider<HistoryBloc>(
+          create: (context) => HistoryBloc(getIt<HistoryRepository>()),
+        ),
+        BlocProvider<ChatBloc>(
+          create: (context) => ChatBloc(chatRepository: getIt<ChatRepository>()),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -45,6 +56,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/signin': (context) => const SignInScreen(),
           '/signup': (context) => const SignUpScreen(),
+          '/cameraScreen': (context) => const CameraApp(),
           '/landing': (context) => const LandingPage(),
           '/camera': (context) => const CameraScreen(),
         },
@@ -52,3 +64,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
